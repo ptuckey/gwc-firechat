@@ -1,0 +1,53 @@
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firechat/3.0.1/firechat.min.css" />
+  <script src="https://cdn.firebase.com/libs/firechat/3.0.1/firechat.min.js"></script>
+  <script src="index.js"></script>
+
+  <script>
+    window.onload = function() {
+
+      initFirebase();
+
+      $("#login").submit(function(e) {
+        // Do not reload page - handle in JS
+        e.preventDefault();
+        onLoginSubmit();
+      });
+
+      $("#join").submit(function(e) {
+        // Do not reload page - handle in JS
+        e.preventDefault();
+        $("#join").hide();
+        initChat(firebase.auth().currentUser, $("#display-name").val());
+      });
+
+      // If the user already authenticated, show chat
+      firebase.auth().getRedirectResult().then(function(result) {
+        if (result.user) {
+          $("#login").hide();
+          $("#join").show();
+        } else {
+          $("#login").show();
+        }
+      });
+    }
+  </script>
+
+</head>
+
+<body>
+  <form id="login" style="display:none;">
+    Google: <input type="submit" value="Login"><br>
+  </form>
+  <form id="join" style="display:none;">
+    Chat Name:
+    <input type="text" id="display-name"><br>
+    <input type="submit" value="Join"><br>
+  </form>
+  <div id="firechat-wrapper"></div>
+</body>
+
